@@ -1,0 +1,9 @@
+version: '3'
+services:
+    ml_api:
+      build: .
+      container_name: "ml_api-container"
+      ports:
+        - "8000:8000"
+      volumes:
+        - .:/app

@@ -31,11 +31,68 @@ The trained model is saved as a pickle file named `crop_prediction_pipeline.pkl`
 
 A FastAPI application is implemented to provide a RESTful API for predicting the harvest season based on the input environmental factors. The API endpoint `/predict_harvest_season` accepts a POST request with the environmental factors as input and returns the predicted harvest season.
 
+# Prerequisites
+
+Before you begin, ensure you have Python 3.11.6 installed on your system. You can download Python from the official [Python website](https://www.python.org/downloads/).
+
 # Usage
 To use the prediction model:
-1. Install the required dependencies by running `pip install -r requirements.txt`.
-2. Train the model and save it as a pickle file by running the code in the provided script.
-3. Run the FastAPI application by executing `python main.py`.
-4. Make a POST request to `http://localhost:8000/predict_harvest_season` with the input data in the request body to get the predicted harvest season.
+1. Clone the repository:
+2. Install the required dependencies by running `pip install -r requirements.txt`.
+3. Train the model and save it as a pickle file by running the code in the provided script.
+4. Run the FastAPI application by executing `python main.py`.This will start the API on `http://0.0.0.0:8000`
 
-Please note that the input data should include the following fields: temperature, humidity, ph, water_availability, label, and Country.
+## Docker
+ To use docker locally, follow these steps:
+
+1.  Make sure that you have Docker installed on your system
+2.  Run
+```bash
+docker compose up
+```
+
+# Endpoints
+
+### 1. `/`
+
+- **Method:** GET
+- **Description:** Root endpoint to check if the API is running.
+- **Example:** 
+  ```bash
+  curl http://0.0.0.0:8000/
+  ```
+
+### 2. `/predict_harvest_season`
+
+- **Method:** POST
+- **Description:** Predicts the harvest season based on provided environmental factors.
+- **Request Body:**
+  - `temperature`: Temperature in Celsius (float)
+  - `humidity`: Humidity as a percentage (float)
+  - `ph`: Soil pH level (float)
+  - `water_availability`: Water availability (float)
+  - `label`: Crop label (string)
+  - `Country`: Country name (string)
+- **Example Request:**
+  ```bash
+  curl -X POST "http://0.0.0.0:8000/predict_harvest_season" -H "Content-Type: application/json" -d '{"temperature": 25.5, "humidity": 60.0, "ph": 6.5, "water_availability": 0.8, "label": "maize", "Country": "Nigeria"}'
+  ```
+- **Example Response:**
+  ```json
+  {"harvest_season": "Spring"}
+  ```
+
+### Data Defination
+  | Feature               | Possible Values                                                                                          |
+|-----------------------|----------------------------------------------------------------------------------------------------------|
+| Temperature           | 15 and above (float)                                                                                    |
+| Humidity              | 0 and above (float)                                                                                     |
+| pH                    | 0 - 14 (float)                                                                                          |
+| Water Availability    | 0 and above (float)                                                                                     |
+| Label                 | "blackgram", "chickpea", "cotton", "jute", "kidneybeans", "lentil", "maize", "mothbeans", "mungbean", "muskmelon", "pigeonpeas", "rice", "watermelon" (string) |
+| Country               | "Kenya", "Nigeria", "South Africa", "Sudan" (string)                                                   |
+
+Feel free to use this table as a reference when preparing your input data for the `/predict_harvest_season` endpoint. Each column represents a feature with its corresponding possible values. Adjust the values accordingly based on your specific use case.
+
+
+Feel free to explore and integrate this API into your applications for crop prediction based on environmental conditions!
